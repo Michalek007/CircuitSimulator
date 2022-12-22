@@ -8,6 +8,10 @@
 #include "Element.h"
 
 class Capacitor: public Element {
+private:
+    float _capacity;
+public:
+    Capacitor(int node1, int node2, float capacity): Element(node1, node2), _capacity{capacity}{}
 
 };
 

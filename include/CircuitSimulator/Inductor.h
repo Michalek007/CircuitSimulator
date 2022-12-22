@@ -8,7 +8,10 @@
 #include "Element.h"
 
 class Inductor: public Element {
-
+private:
+    float _inductance;
+public:
+    Inductor(int node1, int node2, float inductance): Element(node1, node2), _inductance{inductance}{}
 };
 
 
