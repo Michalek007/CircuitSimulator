@@ -12,7 +12,8 @@ private:
     float _capacity;
 public:
     Capacitor(int node1, int node2, float capacity): Element(node1, node2), _capacity{capacity}{}
-
+    [[nodiscard]] float get_capacity() const {return _capacity;}
+    [[nodiscard]] Complex get_impedance(float c_freq) const;
 };
 
 

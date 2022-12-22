@@ -12,6 +12,7 @@ private:
     float _resistance;
 public:
     Resistor(int node1, int node2, float resistance): Element(node1, node2), _resistance{resistance}{}
+    [[nodiscard]] float get_resistance() const {return _resistance;}
 };
 
 
