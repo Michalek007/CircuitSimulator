@@ -10,6 +10,7 @@
 #include <map>
 #include <memory>
 #include <utility>
+#include <cmath>
 #include "Complex.h"
 
 class Element {
