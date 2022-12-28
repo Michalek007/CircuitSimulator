@@ -9,9 +9,9 @@
 
 class Circuit {
 private:
-    std::shared_ptr<std::vector<std::shared_ptr<Element>>> _elements;
+    std::vector<std::shared_ptr<Element>> _elements;
 public:
-    explicit Circuit(std::shared_ptr<std::vector<std::shared_ptr<Element>>> elements): _elements{std::move(elements)}{}
+    explicit Circuit(std::vector<std::shared_ptr<Element>> elements);
 };
 
 
