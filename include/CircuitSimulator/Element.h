@@ -20,6 +20,8 @@ private:
 
 public:
     Element(int node1, int node2): _node1{node1}, _node2{node2}{}
+    [[nodiscard]] int get_node1() const {return _node1;}
+    [[nodiscard]] int get_node2() const {return _node2;}
 };
 
 
