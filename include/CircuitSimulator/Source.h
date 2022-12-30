@@ -32,7 +32,7 @@ public:
     [[nodiscard]] float get_c_freq() const {return _c_freq;}
     [[nodiscard]] float get_phase() const {return _phase;}
     [[nodiscard]] Type get_type() const {return _type;}
-    [[nodiscard]] bool is_passive_element() const override {return false;}
+    [[nodiscard]] bool is_passive() const override {return false;}
     [[nodiscard]] std::complex<float> get_complex_value() const;
 
 };

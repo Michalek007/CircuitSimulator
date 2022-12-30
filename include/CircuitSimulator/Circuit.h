@@ -5,6 +5,7 @@
 #ifndef CIRCUITSIMULATOR_CIRCUIT_H
 #define CIRCUITSIMULATOR_CIRCUIT_H
 
+#include <Eigen/Dense>
 #include "Element.h"
 #include "Inductor.h"
 #include "Capacitor.h"
@@ -15,20 +16,30 @@
 class Circuit {
 private:
     std::vector<std::shared_ptr<Element>> _elements;
-    std::vector<int> _nodes;
     std::map<int, std::vector<std::shared_ptr<Element>>> _node_elements;
-    std::map<std::string, std::unordered_set<std::shared_ptr<Element>>> _branch;
+
+    std::map<int, int> _matrix_nodes;
+    std::vector<int> _nodes;
+    std::map<std::string, float> _branch_voltage;
+    std::map<std::string, float> _branch_current;
+    std::map<std::string, std::unordered_set<std::shared_ptr<Element>>> _branches;
+    int _ground;
     float _freq;
     float _c_freq;
+    int last_node_value = 0;
 public:
     explicit Circuit(std::vector<std::shared_ptr<Element>> elements, float freq=0);
     [[nodiscard]] std::shared_ptr<Element> find_element(int node, int condition = -1) const;
     void display_nodes() const;
     void display_node_elements() const;
     void display_branch() const;
+    void display_matrix_nodes() const;
     void set_branches();
     [[nodiscard]] bool is_node(int node) const;
-    static std::string get_node_key(int node1, int node2);
+    std::complex<float> get_branch_impedance(const std::string& branch);
+    void calculate();
+    std::string get_node_key(int node1, int node2);
+
 };
 
 

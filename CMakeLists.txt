@@ -9,4 +9,14 @@ add_executable(CircuitSimulator ${SOURCES})
 
 target_include_directories(CircuitSimulator PRIVATE include/CircuitSimulator)
 
+include(FetchContent)
+FetchContent_Declare(
+        eigen
+        GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+        GIT_TAG        3.4.0
+)
+FetchContent_MakeAvailable(eigen)
+
+target_link_libraries (CircuitSimulator Eigen3::Eigen)
+
 set(CMAKE_EXE_LINKER_FLAGS "-static")
