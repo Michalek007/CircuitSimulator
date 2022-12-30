@@ -14,6 +14,7 @@ public:
     Resistor(int node1, int node2, float resistance): Element(node1, node2), _resistance{resistance}{}
     [[nodiscard]] float get_resistance() const {return _resistance;}
     [[nodiscard]] std::complex<float> get_impedance(float c_freq) const override;
+    [[nodiscard]] std::complex<float> get_admittance(float c_freq) const override;
 };
 
 

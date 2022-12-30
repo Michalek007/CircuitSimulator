@@ -14,7 +14,6 @@
 #include <algorithm>
 #include <unordered_set>
 #include <complex>
-#include "Complex.h"
 
 class Element {
 private:
@@ -23,16 +22,16 @@ private:
     std::string _name;
 
 public:
-    Element(int node1, int node2): _node1{node1}, _node2{node2}{}
+    explicit Element(int node1, int node2): _node1{node1}, _node2{node2}{}
     [[nodiscard]] int get_node1() const {return _node1;}
     [[nodiscard]] int get_node2() const {return _node2;}
     [[nodiscard]] std::string get_name() const {return _name;}
     [[nodiscard]] int get_node(int node) const;
     void set_name(const std::string& name) {_name = name;}
     [[nodiscard]] virtual bool is_passive_element() const {return true;}
-    [[nodiscard]] virtual std::complex<float> get_impedance(float c_freq) const = 0;
+    [[nodiscard]] virtual std::complex<float> get_impedance(float c_freq) const {return 0;};
+    [[nodiscard]] virtual std::complex<float> get_admittance(float c_freq) const {return 0;};
     ~Element() = default;
-
 };
 
 

@@ -14,6 +14,7 @@ public:
     Capacitor(int node1, int node2, float capacity): Element(node1, node2), _capacity{capacity}{}
     [[nodiscard]] float get_capacity() const {return _capacity;}
     [[nodiscard]] std::complex<float> get_impedance(float c_freq) const override;
+    [[nodiscard]] std::complex<float> get_admittance(float c_freq) const override;
 };
 
 

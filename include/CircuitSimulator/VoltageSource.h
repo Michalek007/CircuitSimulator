@@ -10,8 +10,8 @@
 
 class VoltageSource: public Source {
 public:
-    VoltageSource(int node1, int node2, float amp, float freq=0, float phase=0): Source(node1, node2, amp, freq, phase)
-    {}
+    VoltageSource(int node1, int node2, float amp, float freq=0, float phase=0, Type type=Type::voltage)
+    : Source(node1, node2, amp, type, freq, phase) {}
 
     [[nodiscard]] std::complex<float> get_voltage() const;
 };

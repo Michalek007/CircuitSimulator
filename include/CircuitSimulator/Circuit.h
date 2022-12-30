@@ -6,6 +6,11 @@
 #define CIRCUITSIMULATOR_CIRCUIT_H
 
 #include "Element.h"
+#include "Inductor.h"
+#include "Capacitor.h"
+#include "Resistor.h"
+#include "VoltageSource.h"
+#include "CurrentSource.h"
 
 class Circuit {
 private:

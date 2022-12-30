@@ -14,6 +14,7 @@ public:
     Inductor(int node1, int node2, float inductance): Element(node1, node2), _inductance{inductance}{}
     [[nodiscard]] float get_inductance() const {return _inductance;}
     [[nodiscard]] std::complex<float> get_impedance(float c_freq) const override;
+    [[nodiscard]] std::complex<float> get_admittance(float c_freq) const override;
 };
 
 
