@@ -12,6 +12,7 @@
 #include <utility>
 #include <cmath>
 #include <algorithm>
+#include <unordered_set>
 #include "Complex.h"
 
 class Element {
