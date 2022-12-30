@@ -22,6 +22,8 @@ public:
     [[nodiscard]] float get_freq() const {return _freq;}
     [[nodiscard]] float get_c_freq() const {return _c_freq;}
     [[nodiscard]] float get_phase() const {return _phase;}
+    [[nodiscard]] bool is_passive_element() const override {return false;}
+    [[nodiscard]] std::complex<float> get_impedance(float c_freq) const override {return 0;}
 
 };
 

@@ -13,6 +13,7 @@
 #include <cmath>
 #include <algorithm>
 #include <unordered_set>
+#include <complex>
 #include "Complex.h"
 
 class Element {
@@ -26,8 +27,11 @@ public:
     [[nodiscard]] int get_node1() const {return _node1;}
     [[nodiscard]] int get_node2() const {return _node2;}
     [[nodiscard]] std::string get_name() const {return _name;}
+    [[nodiscard]] int get_node(int node) const;
     void set_name(const std::string& name) {_name = name;}
-    int get_node(int node) const;
+    [[nodiscard]] virtual bool is_passive_element() const {return true;}
+    [[nodiscard]] virtual std::complex<float> get_impedance(float c_freq) const = 0;
+    ~Element() = default;
 
 };
 

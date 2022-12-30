@@ -13,7 +13,7 @@ public:
     VoltageSource(int node1, int node2, float amp, float freq=0, float phase=0): Source(node1, node2, amp, freq, phase)
     {}
 
-    [[nodiscard]] Complex get_voltage() const;
+    [[nodiscard]] std::complex<float> get_voltage() const;
 };
 
 

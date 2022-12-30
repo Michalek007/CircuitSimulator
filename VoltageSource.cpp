@@ -4,9 +4,9 @@
 
 #include "VoltageSource.h"
 
-Complex VoltageSource::get_voltage() const {
+std::complex<float> VoltageSource::get_voltage() const {
     if (get_freq() == 0){
-        return Complex {get_amp(), 0};
+        return {get_amp(), 0};
     }
-    return Complex {1, 1};
+    return {1, 1};
 }

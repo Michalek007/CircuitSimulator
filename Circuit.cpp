@@ -4,7 +4,9 @@
 
 #include "Circuit.h"
 
-Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements): _elements{std::move(elements)}{
+Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _elements{std::move(elements)}, _freq{freq}{
+    _c_freq = (float) (2 * std::numbers::pi * _freq);
+
     std::map<int, int> nodes_counter;
     for (auto &element: _elements) {
         nodes_counter[element->get_node1()] += 1;
@@ -67,7 +69,7 @@ void Circuit::display_branch() const {
     }
 }
 
-void Circuit::set_branches() {
+void Circuit::set_branches(){
     for (auto node: _nodes){
         int node_memory = node;
         for (auto &element: _node_elements[node]) {
@@ -127,7 +129,7 @@ void Circuit::set_branches() {
     }
 }
 
-bool Circuit::is_node(int node) {
+bool Circuit::is_node(int node) const {
     if (std::ranges::any_of(_nodes.begin(), _nodes.end(), [&node](int n){return n==node;})){
         return true;
     }

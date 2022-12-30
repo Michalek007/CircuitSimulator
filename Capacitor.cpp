@@ -4,7 +4,6 @@
 
 #include "Capacitor.h"
 
-Complex Capacitor::get_impedance(float c_freq) const {
-    Complex impedance {0, -1/(get_capacity() * c_freq)};
-    return impedance;
+std::complex<float>  Capacitor::get_impedance(float c_freq) const {
+    return {0, -1/(_capacity * c_freq)};
 }

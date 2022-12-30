@@ -4,7 +4,6 @@
 
 #include "Inductor.h"
 
-Complex Inductor::get_impedance(float c_freq) const {
-    Complex impedance {0, get_inductance() * c_freq};
-    return impedance;
+std::complex<float> Inductor::get_impedance(float c_freq) const {
+    return {0, _inductance * c_freq};
 }

@@ -4,9 +4,9 @@
 
 #include "CurrentSource.h"
 
-Complex CurrentSource::get_current() const {
+std::complex<float> CurrentSource::get_current() const {
     if (get_freq() == 0){
-        return Complex {get_amp(), 0};
+        return {get_amp(), 0};
     }
-    return Complex {1, 1};
+    return {1, 1};
 }

@@ -12,7 +12,7 @@ class CurrentSource: public Source {
 public:
     CurrentSource(int node1, int node2, float amp, float freq=0, float phase=0): Source(node1, node2, amp, freq, phase)
     {}
-    [[nodiscard]] Complex get_current() const;
+    [[nodiscard]] std::complex<float> get_current() const;
 };
 
 
