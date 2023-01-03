@@ -7,13 +7,6 @@
 
 #include "Element.h"
 
-enum class Type{
-    current = 0,
-    voltage = 1,
-    d_current = 2,
-    d_voltage = 3
-};
-
 
 class Source: public Element {
 private:
@@ -31,9 +24,9 @@ public:
     [[nodiscard]] float get_freq() const {return _freq;}
     [[nodiscard]] float get_c_freq() const {return _c_freq;}
     [[nodiscard]] float get_phase() const {return _phase;}
-    [[nodiscard]] Type get_type() const {return _type;}
+    [[nodiscard]] Type get_type() const override {return _type;}
     [[nodiscard]] bool is_passive() const override {return false;}
-    [[nodiscard]] std::complex<float> get_complex_value() const;
+    [[nodiscard]] std::complex<float> get_complex_value() const override;
 
 };
 

@@ -20,8 +20,8 @@ private:
 
     std::map<int, int> _matrix_nodes;
     std::vector<int> _nodes;
-    std::map<std::string, float> _branch_voltage;
-    std::map<std::string, float> _branch_current;
+    std::map<std::string, std::complex<float>> _branch_voltage;
+    std::map<std::string, std::complex<float>> _branch_current;
     std::map<std::string, std::unordered_set<std::shared_ptr<Element>>> _branches;
     int _ground;
     float _freq;
@@ -34,6 +34,7 @@ public:
     void display_node_elements() const;
     void display_branch() const;
     void display_matrix_nodes() const;
+    void display_branches_voltage() const;
     void set_branches();
     [[nodiscard]] bool is_node(int node) const;
     std::complex<float> get_branch_impedance(const std::string& branch);

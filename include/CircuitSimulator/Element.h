@@ -15,6 +15,16 @@
 #include <unordered_set>
 #include <complex>
 
+
+enum class Type{
+    current = 0,
+    voltage = 1,
+    d_current = 2,
+    d_voltage = 3,
+    passive = 4
+};
+
+
 class Element {
 private:
     int _node1;
@@ -29,10 +39,13 @@ public:
     [[nodiscard]] int get_node(int node) const;
     void set_name(const std::string& name) {_name = name;}
     [[nodiscard]] virtual bool is_passive() const {return true;}
-    [[nodiscard]] virtual std::complex<float> get_impedance(float c_freq) const {return 0;};
-    [[nodiscard]] virtual std::complex<float> get_admittance(float c_freq) const {return 0;};
-    [[nodiscard]] virtual std::complex<float> get_voltage(std::complex<float> current) const {return 0;};
-    [[nodiscard]] virtual std::complex<float> get_current(std::complex<float> voltage) const {return 0;};
+    [[nodiscard]] virtual std::complex<float> get_impedance(float c_freq) const {return 0;}
+    [[nodiscard]] virtual std::complex<float> get_admittance(float c_freq) const {return 0;}
+    [[nodiscard]] virtual std::complex<float> get_voltage(std::complex<float> current) const {return 0;}
+    [[nodiscard]] virtual std::complex<float> get_current(std::complex<float> voltage) const {return 0;}
+    [[nodiscard]] virtual std::complex<float> get_complex_value() const {return {0, 0};}
+    [[nodiscard]] virtual Type get_type() const {return Type::passive;}
+
     ~Element() = default;
 };
 
