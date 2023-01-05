@@ -27,7 +27,6 @@ int main() {
     element6->set_name("l1");
     element7->set_name("r3");
     element8->set_name("r4");
-
     std::vector<std::shared_ptr<Element>> elements {element1, element2, element3, element4,
                                                     element5, element6, element7, element8};
     Circuit circuit {elements, 100};
@@ -48,8 +47,9 @@ int main() {
 //    std::cout << x2/x << std::endl;
 //    std::cout << abs(x2/x) << std::endl;
 
-    std::cout <<circuit.get_branch_impedance("01") << std::endl;
-    std::cout <<circuit.get_branch_impedance("02") << std::endl;
+    std::cout <<circuit.get_branch_admittance("01") << std::endl;
+    std::cout <<circuit.get_branch_admittance("02") << std::endl;
+
 //    std::cout << 1e-03 << std::endl;
     return 0;
 }

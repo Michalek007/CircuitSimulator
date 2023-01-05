@@ -29,7 +29,7 @@ private:
     int last_node_value = 0;
 public:
     explicit Circuit(std::vector<std::shared_ptr<Element>> elements, float freq=0);
-    [[nodiscard]] std::shared_ptr<Element> find_element(int node, int condition = -1) const;
+    [[nodiscard]] std::shared_ptr<Element> find_element(int node, int condition=-1) const;
     void display_nodes() const;
     void display_node_elements() const;
     void display_branch() const;
@@ -37,7 +37,7 @@ public:
     void display_branches_voltage() const;
     void set_branches();
     [[nodiscard]] bool is_node(int node) const;
-    std::complex<float> get_branch_impedance(const std::string& branch);
+    std::complex<float> get_branch_admittance(const std::string& branch);
     void calculate();
     std::string get_node_key(int node1, int node2);
 

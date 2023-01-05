@@ -67,7 +67,9 @@ void Circuit::display_node_elements() const {
 
 void Circuit::display_branch() const {
     for (auto &elements: _branches){
+        std::cout << "___________" << std::endl;
         std::cout << elements.first << std::endl;
+        std::cout << "___________" << std::endl;
         for (auto &element: elements.second){
             std::cout << element->get_name() << std::endl;
         }
@@ -81,26 +83,52 @@ void Circuit::display_matrix_nodes() const {
     }
 }
 
+void Circuit::display_branches_voltage() const {
+    for (auto &item: _branch_voltage){
+        std::cout << item.first << std::endl;
+        std::cout << item.second << std::endl;
+    }
+}
+
 void Circuit::set_branches(){
+    int memory {0};
     for (auto node: _nodes){
         for (auto &element: _node_elements[node]) {
+            int condition {0};
+            for (auto &vec: _branches){
+//                if (vec.first[0] == (char)node || vec.first[1] == (char)node){
+//
+//                }
+                for (auto &item: vec.second){
+                    if (element == item) condition = 1;
+                }
+                if (condition){
+                     break;
+                }
+            }
+            if (condition){
+                continue;
+            }
             std::unordered_set<std::shared_ptr<Element>> set{};
-//            set.insert(element);
+            set.insert(element);
             int current_node = element->get_node(node);
             int last_node = node;
-//            if (is_node(last_node)){
-//                if (_branches.contains(get_node_key(node, last_node))){
-//                    _branches[get_node_key(node, last_node)].insert(element);
-//                }
-//                else{
-//                    _branches[get_node_key(node, last_node)] = set;
-//                }
-//                continue;
-//            }
+            if (is_node(current_node)){
+                if (_branches.contains(get_node_key(node, current_node))){
+//                    _branches[get_node_key(node, current_node)].insert(element);
+                    _branches[get_node_key(node, current_node) + std::to_string(memory)] = set;
+                    memory += 1;
+                }
+                else{
+                    _branches[get_node_key(node, current_node)] = set;
+                }
+                continue;
+            }
             while (true){
                 auto e = find_element(current_node, last_node);
                 if (e == nullptr){
-                    set.insert(element);
+//                    set.insert(element);
+                    continue;
                 }
                 else{
                     set.insert(e);
@@ -109,7 +137,9 @@ void Circuit::set_branches(){
                 }
                 if (is_node(current_node)){
                     if (_branches.contains(get_node_key(node, current_node))){
-                        _branches[get_node_key(node, current_node)].insert(set.begin(), set.end());
+//                        _branches[get_node_key(node, current_node)].insert(set.begin(), set.end());
+                        _branches[get_node_key(node, current_node) + std::to_string(memory)] = set;
+                        memory += 1;
                     }
                     else{
                         _branches[get_node_key(node, current_node)] = set;
@@ -173,13 +203,13 @@ void Circuit::calculate() {
     for (auto &item: _branches){
         int n0 = _matrix_nodes[(int)(item.first[0] - '0')];
         int n1 = _matrix_nodes[(int)(item.first[1] - '0')];
-        auto branch_impedance = get_branch_impedance(item.first);
+        auto branch_admittance = get_branch_admittance(item.first);
         if (n0 == 0){
-            Y(n1-1,n1-1) = branch_impedance;
+            Y(n1-1,n1-1) = branch_admittance;
         }
         else{
-            Y(n0-1,n1-1) = -branch_impedance;
-            Y(n1-1,n0-1) = -branch_impedance;
+            Y(n0-1,n1-1) = -branch_admittance;
+            Y(n1-1,n0-1) = -branch_admittance;
         }
         if (!std::ranges::any_of(item.second.begin(), item.second.end(), [](const std::shared_ptr<Element>& arg){return !arg->is_passive();})){
             continue;
@@ -188,7 +218,7 @@ void Circuit::calculate() {
             if (!element->is_passive()){
                 if (!n0){
                     if (element->get_type() != Type::current){
-                        I(n1-1) += element->get_complex_value() / branch_impedance;
+                        I(n1-1) += element->get_complex_value() / branch_admittance;
                     }
                     else{
                         I(n1-1) += element->get_complex_value();
@@ -196,8 +226,8 @@ void Circuit::calculate() {
                 }
                 else{
                     if (element->get_type() != Type::current){
-                        I(n0-1) += element->get_complex_value() / branch_impedance;
-                        I(n1-1) += element->get_complex_value() / branch_impedance;
+                        I(n0-1) += element->get_complex_value() / branch_admittance;
+                        I(n1-1) += element->get_complex_value() / branch_admittance;
                     }
                     else{
                         I(n0-1) += element->get_complex_value();
@@ -230,17 +260,10 @@ void Circuit::calculate() {
     }
 }
 
-std::complex<float> Circuit::get_branch_impedance(const std::string& branch){
+std::complex<float> Circuit::get_branch_admittance(const std::string& branch){
     std::complex<float> sum(0, 0);
     for (auto &item: _branches[branch]){
         sum += item->get_impedance(_c_freq);
     }
     return std::complex<float> {1, 0} / sum;
-}
-
-void Circuit::display_branches_voltage() const {
-    for (auto &item: _branch_voltage){
-        std::cout << item.first << std::endl;
-        std::cout << item.second << std::endl;
-    }
 }
