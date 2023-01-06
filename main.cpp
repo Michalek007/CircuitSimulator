@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Circuit.h"
+#include "tests/CircuitTests.h"
 
 int main() {
 //    std::shared_ptr<Element> element1 = std::make_shared<Capacitor>(0, 3, 1);
@@ -38,17 +39,14 @@ int main() {
 //
     circuit.display_branches_voltage();
 
-    std::complex<float> W1 {0.01,-0};
-    std::complex<float> W2 {0.00605216,0.00314159};
-    std::complex<float> W {0.00605341,0.00314032};
-    std::cout << W1/W << std::endl;
-    std::cout << abs(W1/W) << std::endl;
-    std::cout << W2/W << std::endl;
-    std::cout << abs(W2/W) << std::endl;
-
-//    std::cout <<circuit.get_branch_admittance("01") +  circuit.get_branch_admittance("010")<< std::endl;
-//    std::cout <<circuit.get_branch_admittance("02") + circuit.get_branch_admittance("021") << std::endl;
-
-//    std::cout << 1e-03 << std::endl;
+//    std::complex<float> W1 {0.01,-0};
+//    std::complex<float> W2 {0.00605216,0.00314159};
+//    std::complex<float> W {0.00605341,0.00314032};
+//    std::cout << W1/W << std::endl;
+//    std::cout << abs(W1/W) << std::endl;
+//    std::cout << W2/W << std::endl;
+//    std::cout << abs(W2/W) << std::endl;
+    std::cout << CircuitTests::comparison(0.739836, 0.7398363791030412) << std::endl;
+    std::cout << CircuitTests::comparison(0.999924, 0.9999235809949549) << std::endl;
     return 0;
 }

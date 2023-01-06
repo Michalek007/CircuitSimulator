@@ -85,8 +85,9 @@ void Circuit::display_matrix_nodes() const {
 
 void Circuit::display_branches_voltage() const {
     for (auto &item: _branch_voltage){
-        std::cout << item.first << std::endl;
-        std::cout << item.second << std::endl;
+        std::cout << item.first << ":" << std::endl;
+        std::cout << abs(item.second) << std::endl;
+        std::cout << arg(item.second) << std::endl;
     }
 }
 
@@ -259,6 +260,17 @@ void Circuit::calculate() {
         std::cout << y << std::endl;
         std::cout << Vi << std::endl;
         _branch_voltage[get_node_key(0, i+1)] = Vi;
+    }
+//    for (int n=0;n< tgamma(size+1)/tgamma(size-1)/2;n++){
+//    }
+    for (auto &item: _branches){
+        if (item.first[0] == '0'){
+            continue;
+        }
+        if (item.first.length() == 2){
+            _branch_voltage[item.first] = _branch_voltage[get_node_key(0, _matrix_nodes[(int)(item.first[0] - '0')])]
+                    - _branch_voltage[get_node_key(0, _matrix_nodes[(int)(item.first[1] - '0')])];
+        }
     }
 }
 
