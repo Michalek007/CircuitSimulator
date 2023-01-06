@@ -5,6 +5,7 @@
 #ifndef CIRCUITSIMULATOR_CIRCUITTESTS_H
 #define CIRCUITSIMULATOR_CIRCUITTESTS_H
 
+#include "Circuit.h"
 
 class CircuitTests {
 public:

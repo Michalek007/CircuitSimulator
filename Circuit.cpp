@@ -267,9 +267,10 @@ void Circuit::calculate() {
         if (item.first[0] == '0'){
             continue;
         }
+        int n0 = _matrix_nodes[(int)(item.first[0] - '0')];
+        int n1 = _matrix_nodes[(int)(item.first[1] - '0')];
         if (item.first.length() == 2){
-            _branch_voltage[item.first] = _branch_voltage[get_node_key(0, _matrix_nodes[(int)(item.first[0] - '0')])]
-                    - _branch_voltage[get_node_key(0, _matrix_nodes[(int)(item.first[1] - '0')])];
+            _branch_voltage[get_node_key(n0, n1)] = _branch_voltage[get_node_key(0, n0)] - _branch_voltage[get_node_key(0, n1)];
         }
     }
 }
