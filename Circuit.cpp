@@ -96,14 +96,14 @@ void Circuit::set_branches(){
         for (auto &element: _node_elements[node]) {
             int condition {0};
             for (auto &vec: _branches){
-//                if (vec.first[0] == (char)node || vec.first[1] == (char)node){
+//                if ((int)(vec.first[0]-'0') == node || (int)(vec.first[1]-'0') == node){
 //
 //                }
                 for (auto &item: vec.second){
                     if (element == item) condition = 1;
                 }
                 if (condition){
-                     break;
+                    break;
                 }
             }
             if (condition){
@@ -159,7 +159,6 @@ bool Circuit::is_node(int node) const {
 }
 
 std::string Circuit::get_node_key(int node1, int node2) {
-    std::string key;
     if (!_matrix_nodes.contains(node1)){
         if (node1 == _ground){
             _matrix_nodes[node1] = 0;
@@ -179,37 +178,35 @@ std::string Circuit::get_node_key(int node1, int node2) {
         }
     }
     if (node1 > node2){
-        key = std::to_string(node2) + std::to_string(node1);
+        return std::to_string(node2) + std::to_string(node1);
     }
     else if (node1 < node2){
-        key = std::to_string(node1) + std::to_string(node2);
+        return std::to_string(node1) + std::to_string(node2);
     }
     else{
         throw std::invalid_argument("Invalid branch.");
     }
-//    if (_branches.contains(key)){
-//        return key + "r";
-//    }
-//    else{
-//        return key;
-//    }
-    return key;
 }
 
 void Circuit::calculate() {
     unsigned int size = _nodes.size()-1;
-    Eigen::MatrixXcf Y(size, size);
+//    Eigen::MatrixXcf Y (size, size);
+    Eigen::MatrixXcf Y = Eigen::MatrixXcf::Zero(size, size);
     Eigen::VectorXcf I = Eigen::VectorXcf::Zero(size);
     for (auto &item: _branches){
         int n0 = _matrix_nodes[(int)(item.first[0] - '0')];
         int n1 = _matrix_nodes[(int)(item.first[1] - '0')];
+        std::cout << n0 << n1 << std::endl;
         auto branch_admittance = get_branch_admittance(item.first);
         if (n0 == 0){
-            Y(n1-1,n1-1) = branch_admittance;
+            Y(n1-1,n1-1) += branch_admittance;
         }
         else{
-            Y(n0-1,n1-1) = -branch_admittance;
-            Y(n1-1,n0-1) = -branch_admittance;
+            Y(n0-1,n1-1) += -branch_admittance;
+            Y(n1-1,n0-1) += -branch_admittance;
+
+            Y(n0-1,n0-1) += branch_admittance;
+            Y(n1-1,n1-1) += branch_admittance;
         }
         if (!std::ranges::any_of(item.second.begin(), item.second.end(), [](const std::shared_ptr<Element>& arg){return !arg->is_passive();})){
             continue;
@@ -218,7 +215,7 @@ void Circuit::calculate() {
             if (!element->is_passive()){
                 if (!n0){
                     if (element->get_type() != Type::current){
-                        I(n1-1) += element->get_complex_value() / branch_admittance;
+                        I(n1-1) += element->get_complex_value() * branch_admittance;
                     }
                     else{
                         I(n1-1) += element->get_complex_value();
@@ -226,8 +223,8 @@ void Circuit::calculate() {
                 }
                 else{
                     if (element->get_type() != Type::current){
-                        I(n0-1) += element->get_complex_value() / branch_admittance;
-                        I(n1-1) += element->get_complex_value() / branch_admittance;
+                        I(n0-1) += element->get_complex_value() * branch_admittance;
+                        I(n1-1) += element->get_complex_value() * branch_admittance;
                     }
                     else{
                         I(n0-1) += element->get_complex_value();
@@ -240,7 +237,7 @@ void Circuit::calculate() {
 //    std::cout << Y << std::endl;
 //    std::cout << I << std::endl;
 
-    std::complex Vi{0, 0};
+    std::complex<float> Vi{0, 0};
 
     for (int i=0;i<size;i++){
         auto Yi = Y;
@@ -250,11 +247,16 @@ void Circuit::calculate() {
         }
         std::cout << "___________________" << std::endl;
 //        std::cout << Yi << std::endl;
-        std::cout << Yi.determinant() << std::endl;
-        std::cout << Y.determinant() << std::endl;
+//        std::cout << Yi.determinant() << std::endl;
+//        std::cout << Y.determinant() << std::endl;
+//        std::cout << Y << std::endl;
+//        std::cout << I << std::endl;
+
         auto yi = Yi.determinant();
         auto y = Y.determinant();
         Vi = yi/y;
+        std::cout << yi << std::endl;
+        std::cout << y << std::endl;
         std::cout << Vi << std::endl;
         _branch_voltage[get_node_key(0, i+1)] = Vi;
     }

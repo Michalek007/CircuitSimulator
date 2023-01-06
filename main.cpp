@@ -33,22 +33,21 @@ int main() {
 //    circuit.display_node_elements();
 //    circuit.display_nodes();
     circuit.display_branch();
-//    circuit.display_matrix_nodes();
-//    circuit.calculate();
+    circuit.display_matrix_nodes();
+    circuit.calculate();
 //
-//    circuit.display_branches_voltage();
+    circuit.display_branches_voltage();
 
+    std::complex<float> W1 {0.01,-0};
+    std::complex<float> W2 {0.00605216,0.00314159};
+    std::complex<float> W {0.00605341,0.00314032};
+    std::cout << W1/W << std::endl;
+    std::cout << abs(W1/W) << std::endl;
+    std::cout << W2/W << std::endl;
+    std::cout << abs(W2/W) << std::endl;
 
-//    std::complex<float> x1 {0.00201117,-0.031767};
-//    std::complex<float> x2 {-0.000253047,-8.05472e-06};
-//    std::complex<float> x {0.0524116,125.789};
-//    std::cout << x1/x << std::endl;
-//    std::cout << abs(x1/x) << std::endl;
-//    std::cout << x2/x << std::endl;
-//    std::cout << abs(x2/x) << std::endl;
-
-    std::cout <<circuit.get_branch_admittance("01") << std::endl;
-    std::cout <<circuit.get_branch_admittance("02") << std::endl;
+//    std::cout <<circuit.get_branch_admittance("01") +  circuit.get_branch_admittance("010")<< std::endl;
+//    std::cout <<circuit.get_branch_admittance("02") + circuit.get_branch_admittance("021") << std::endl;
 
 //    std::cout << 1e-03 << std::endl;
     return 0;
