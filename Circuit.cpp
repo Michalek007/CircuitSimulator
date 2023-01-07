@@ -7,6 +7,7 @@
 Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _elements{std::move(elements)}, _freq{freq}{
     _c_freq = (float) (2 * std::numbers::pi * _freq);
 
+//    TODO: if freq == 0 then check if element admittance == -1 then delete it from circuit
     std::map<int, int> nodes_counter;
     for (auto &element: _elements) {
         nodes_counter[element->get_node1()] += 1;
@@ -20,6 +21,13 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
             value = node_value;
             _ground = node;
         }
+        if (node_value < 2){
+            for (int i=0;i<_elements.size();i++){
+                if (_elements[i]->get_node1() == node || _elements[i]->get_node2() == node){
+                    _elements.erase(_elements.begin() + i);
+                }
+            }
+        }
         if (node_value > 2){
             _nodes.push_back(node);
             for (auto &element: _elements){
@@ -28,6 +36,9 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
                 }
             }
         }
+    }
+    if (_nodes.empty()){
+        throw std::invalid_argument("Circuit is open.");
     }
     set_branches();
 }

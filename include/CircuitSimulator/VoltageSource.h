@@ -8,6 +8,13 @@
 #include "Element.h"
 #include "Source.h"
 
+// TODO: class Voltage with _phase, _freq, _c_freq, _amp, _complex_v
+// constructor with _complex_value
+// constructor with _phase, _freq, _amp
+// getters
+// override operators for ostream
+// or method display
+
 class VoltageSource: public Source {
 public:
     VoltageSource(int node1, int node2, float amp, float freq=0, float phase=0, Type type=Type::voltage)

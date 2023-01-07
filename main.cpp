@@ -3,7 +3,7 @@
 #include "tests/CircuitTests.h"
 
 int main() {
-//    CircuitTests::circuit_test_1();
+    CircuitTests::circuit_test_1();
     CircuitTests::circuit_test_2();
 //    std::complex<float> W1 {0.01,-0};
 //    std::complex<float> W2 {0.00605216,0.00314159};

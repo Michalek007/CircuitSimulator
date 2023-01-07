@@ -8,6 +8,7 @@
 #include "Element.h"
 #include "Source.h"
 
+// TODO: just like for the Voltage
 class CurrentSource: public Source {
 public:
     CurrentSource(int node1, int node2, float amp, float freq=0, float phase=0, Type type=Type::current)
