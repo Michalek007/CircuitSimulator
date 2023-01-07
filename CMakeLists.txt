@@ -3,7 +3,7 @@ project(CircuitSimulator)
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(SOURCES main.cpp Element.cpp Circuit.cpp Capacitor.cpp Inductor.cpp Resistor.cpp VoltageSource.cpp CurrentSource.cpp Source.cpp tests/CircuitTests.cpp tests/CircuitTests.h)
+set(SOURCES main.cpp Element.cpp Circuit.cpp Capacitor.cpp Inductor.cpp Resistor.cpp Voltage.cpp Current.cpp Source.cpp tests/CircuitTests.cpp tests/CircuitTests.h)
 
 add_executable(CircuitSimulator ${SOURCES})
 

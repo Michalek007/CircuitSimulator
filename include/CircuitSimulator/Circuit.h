@@ -10,8 +10,8 @@
 #include "Inductor.h"
 #include "Capacitor.h"
 #include "Resistor.h"
-#include "VoltageSource.h"
-#include "CurrentSource.h"
+#include "Voltage.h"
+#include "Current.h"
 
 class Circuit {
 private:
