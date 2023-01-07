@@ -5,7 +5,8 @@
 int main() {
     CircuitTests::circuit_test_1();
     CircuitTests::circuit_test_2();
-
+    CircuitTests::circuit_test_3();
+    CircuitTests::circuit_test_4();
 //    std::complex<float> W1 {0.01,-0};
     std::complex<float> W2 {0.00605216,0.00314159};
     Voltage v1 {W2, 100};

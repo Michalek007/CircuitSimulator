@@ -25,10 +25,13 @@ void CircuitTests::circuit_test_1() {
     std::vector<std::shared_ptr<Element>> elements {e1, e2, e3, e4, e5, e6, e7, e8};
     Circuit circuit {elements, 100};
 
-    circuit.display_branch();
-    circuit.display_matrix_nodes();
+//    circuit.display_branch();
+//    circuit.display_matrix_nodes();
     circuit.calculate();
+    circuit.calculate_elements_voltage();
+    circuit.calculate_elements_current();
     circuit.display_branches_voltage();
+    circuit.display_elements_properties();
 }
 
 void CircuitTests::circuit_test_2() {
@@ -58,14 +61,57 @@ void CircuitTests::circuit_test_2() {
     std::vector<std::shared_ptr<Element>> elements {e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11};
     Circuit circuit {elements, 100};
 
-    circuit.display_branch();
-    circuit.display_matrix_nodes();
     circuit.calculate();
+    circuit.calculate_elements_voltage();
+    circuit.calculate_elements_current();
     circuit.display_branches_voltage();
+    circuit.display_elements_properties();
 }
 
 void CircuitTests::circuit_test_3() {
+    std::shared_ptr<Element> e1 = std::make_shared<Source>(0, 1, 1, Type::voltage);
+    std::shared_ptr<Element> e2 = std::make_shared<Resistor>(1, 2, 1000);
+    std::shared_ptr<Element> e3 = std::make_shared<Resistor>(2, 0, 1000);
+    std::shared_ptr<Element> e4 = std::make_shared<Source>(4, 0, 1, Type::voltage);
+    std::shared_ptr<Element> e5 = std::make_shared<Resistor>(2, 3, 1000);
+    std::shared_ptr<Element> e6 = std::make_shared<Resistor>(3, 0, 1000);
+    std::shared_ptr<Element> e7 = std::make_shared<Resistor>(3, 4, 1000);
+    e1->set_name("e1");
+    e2->set_name("r1");
+    e3->set_name("r2");
+    e4->set_name("e2");
+    e5->set_name("r3");
+    e6->set_name("r4");
+    e7->set_name("r5");
 
+    std::vector<std::shared_ptr<Element>> elements {e1, e2, e3, e4, e5, e6, e7};
+    Circuit circuit {elements};
+
+    circuit.calculate();
+    circuit.calculate_elements_voltage();
+    circuit.calculate_elements_current();
+    circuit.display_branches_voltage();
+    circuit.display_elements_properties();
+}
+
+void CircuitTests::circuit_test_4() {
+    std::shared_ptr<Element> e1 = std::make_shared<Source>(0, 1, 1, Type::voltage, 100);
+    std::shared_ptr<Element> e2 = std::make_shared<Resistor>(1, 2, 1000);
+    std::shared_ptr<Element> e3 = std::make_shared<Resistor>(2, 3, 1);
+    std::shared_ptr<Element> e4 = std::make_shared<Inductor>(3, 0, 1);
+    e1->set_name("e1");
+    e2->set_name("r1");
+    e3->set_name("c1");
+    e4->set_name("l1");
+
+    std::vector<std::shared_ptr<Element>> elements {e1, e2, e3, e4};
+    Circuit circuit {elements, 100};
+
+    circuit.calculate();
+    circuit.calculate_elements_voltage();
+    circuit.calculate_elements_current();
+    circuit.display_branches_voltage();
+    circuit.display_elements_properties();
 }
 
 bool CircuitTests::float_comparison(float x, float y) {

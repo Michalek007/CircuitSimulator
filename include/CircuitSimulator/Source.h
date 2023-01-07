@@ -16,10 +16,7 @@ private:
     float _phase;
     Type _type;
 public:
-    Source(int node1, int node2, float amp, Type type, float freq=0, float phase=0): Element(node1, node2),
-    _amp{amp}, _type{type}, _freq{freq}, _phase{phase}{
-        _c_freq = (float)(freq*2*std::numbers::pi);
-    }
+    Source(int node1, int node2, float amp, Type type, float freq=0, float phase=0);
     [[nodiscard]] float get_amp() const {return _amp;}
     [[nodiscard]] float get_freq() const {return _freq;}
     [[nodiscard]] float get_c_freq() const {return _c_freq;}

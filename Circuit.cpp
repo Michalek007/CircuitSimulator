@@ -202,8 +202,8 @@ void Circuit::calculate() {
     Eigen::MatrixXcf Y = Eigen::MatrixXcf::Zero(size, size);
     Eigen::VectorXcf I = Eigen::VectorXcf::Zero(size);
     for (auto &item: _branches){
-        int n0 = _matrix_nodes[(int)(item.first[0] - '0')];
-        int n1 = _matrix_nodes[(int)(item.first[1] - '0')];
+        int n0 = _matrix_nodes[char_to_int(item.first[0])];
+        int n1 = _matrix_nodes[char_to_int(item.first[1])];
         std::cout << n0 << n1 << std::endl;
         auto branch_admittance = get_branch_admittance(item.first);
         if (n0 == 0){
@@ -256,8 +256,6 @@ void Circuit::calculate() {
 //        std::cout << Yi << std::endl;
 //        std::cout << Yi.determinant() << std::endl;
 //        std::cout << Y.determinant() << std::endl;
-//        std::cout << Y << std::endl;
-//        std::cout << I << std::endl;
 
         auto yi = Yi.determinant();
         auto y = Y.determinant();
@@ -265,7 +263,7 @@ void Circuit::calculate() {
         std::cout << yi << std::endl;
         std::cout << y << std::endl;
         std::cout << Vi << std::endl;
-        _branch_voltage[get_node_key(0, i+1)] = Vi;
+        _branch_voltage[get_node_key(0, decode_matrix_node(i+1))] = Vi;
     }
 //    for (int n=0;n< tgamma(size+1)/tgamma(size-1)/2;n++){
 //    }
@@ -273,8 +271,8 @@ void Circuit::calculate() {
         if (item.first[0] == '0'){
             continue;
         }
-        int n0 = _matrix_nodes[(int)(item.first[0] - '0')];
-        int n1 = _matrix_nodes[(int)(item.first[1] - '0')];
+        int n0 = char_to_int(item.first[0]);
+        int n1 = char_to_int(item.first[1]);
         if (item.first.length() == 2){
             _branch_voltage[get_node_key(n0, n1)] = _branch_voltage[get_node_key(0, n0)] - _branch_voltage[get_node_key(0, n1)];
         }
@@ -296,6 +294,9 @@ std::complex<float> Circuit::get_branch_admittance(const std::string& branch){
 void Circuit::calculate_elements_voltage() {
     for (auto &item: _branches){
         for (auto &element: item.second){
+            if (!element->is_passive()){
+                continue;
+            }
             _element_voltage[element] = Voltage{_branch_current[item.first] * element->get_impedance(_c_freq), _freq};
         }
     }
@@ -308,4 +309,28 @@ void Circuit::calculate_elements_current() {
             _element_current[element] = Current{_branch_voltage[key] * element->get_admittance(_c_freq), _freq};
         }
     }
+}
+
+void Circuit::display_elements_properties() {
+    for (auto &element: _elements){
+        if (!element->is_passive()){
+            continue;
+        }
+        std::cout << element->get_name() << std::endl;
+        _element_voltage[element].display();
+        _element_current[element].display();
+    }
+}
+
+int Circuit::decode_matrix_node(int node) {
+    for (auto &item: _matrix_nodes){
+        if (item.second == node){
+            return item.first;
+        }
+    }
+    throw std::invalid_argument("Invalid node.");
+}
+
+int Circuit::char_to_int(char c) {
+    return (int)(c - '0');
 }

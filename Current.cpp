@@ -16,6 +16,14 @@ Current::Current(std::complex<float> complex_v, float freq): _complex_v{complex_
 }
 
 void Current::display() const {
+    if (_amp == 0){
+        std::cout << 0 << std::endl;
+        return;
+    }
+    if (_freq == 0){
+        std::cout << _amp << std::endl;
+        return;
+    }
     std::cout << _amp << " * sin(" << _c_freq;
     if (_phase > 0){
         std::cout << " + " << _phase << ")" << std::endl;
