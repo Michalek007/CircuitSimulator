@@ -21,6 +21,8 @@ private:
     std::map<int, int> _matrix_nodes;
 
     std::vector<int> _nodes;
+    std::map<std::shared_ptr<Element>, Voltage> _element_voltage;
+    std::map<std::shared_ptr<Element>, Current> _element_current;
     std::map<std::string, std::complex<float>> _branch_voltage;
     std::map<std::string, std::complex<float>> _branch_current;
     std::map<std::string, std::unordered_set<std::shared_ptr<Element>>> _branches;
@@ -42,6 +44,8 @@ public:
 
     std::complex<float> get_branch_admittance(const std::string& branch);
     void calculate();
+    void calculate_elements_voltage();
+    void calculate_elements_current();
 
 };
 

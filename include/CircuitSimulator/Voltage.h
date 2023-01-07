@@ -23,8 +23,9 @@ private:
     float _phase;
     std::complex<float> _complex_v;
 public:
+    Voltage() = default;
     explicit Voltage(float amp, float freq=0, float phase=0);
-    explicit Voltage(std::complex<float> complex_v, float freq);
+    Voltage(std::complex<float> complex_v, float freq);
     [[nodiscard]] float get_amp() const {return _amp;}
     [[nodiscard]] float get_freq() const {return _freq;}
     [[nodiscard]] float get_c_freq() const {return _c_freq;}
