@@ -14,6 +14,7 @@ public:
     static void circuit_test_2();
     static void circuit_test_3();
     static void circuit_test_4();
+    static void circuit_test_5();
 
 };
 

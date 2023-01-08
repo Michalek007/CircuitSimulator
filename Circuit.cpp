@@ -12,7 +12,7 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
         if (std::ranges::any_of(_elements.begin(), _elements.end(), [](const std::shared_ptr<Element> &e) {
             return e->get_admittance(0) == std::complex<float>{-1, 0};})) {
             throw std::invalid_argument(
-                    "With DC source capacitors are breaks and inductors acts like wires. Fix it or chagne source to AC.");
+                    "With DC source capacitors are breaks and inductors acts like wires. Fix it or change source to AC.");
         }
     }
     for (int i=0;i<_elements.size();i++){
@@ -361,7 +361,6 @@ int Circuit::char_to_int(char c) {
 
 void Circuit::calculate_one_mesh() {
     std::complex<float> voltage {0, 0};
-    auto branch_admittance = get_branch_admittance("00");
     auto branch_impedance = get_branch_impedance("00");
     for (auto &element: _elements){
         if (!element->is_passive()) {
@@ -374,5 +373,5 @@ void Circuit::calculate_one_mesh() {
         }
     }
     _branch_voltage["00"] = voltage;
-    _branch_current["00"] = voltage * branch_admittance;
+    _branch_current["00"] = voltage / branch_impedance;
 }

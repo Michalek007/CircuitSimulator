@@ -114,6 +114,24 @@ void CircuitTests::circuit_test_4() {
     circuit.display_elements_properties();
 }
 
+void CircuitTests::circuit_test_5() {
+    std::shared_ptr<Element> e1 = std::make_shared<Source>(0, 1, 1, Type::voltage, 100);
+    std::shared_ptr<Element> e2 = std::make_shared<Resistor>(1, 2, 1000);
+    std::shared_ptr<Element> e3 = std::make_shared<Capacitor>(2, 0, 0.001);
+    e1->set_name("e1");
+    e2->set_name("r1");
+    e3->set_name("c1");
+
+    std::vector<std::shared_ptr<Element>> elements {e1, e2, e3};
+    Circuit circuit {elements, 100};
+
+    circuit.calculate();
+    circuit.calculate_elements_voltage();
+    circuit.calculate_elements_current();
+    circuit.display_branches_voltage();
+    circuit.display_elements_properties();
+}
+
 bool CircuitTests::float_comparison(float x, float y) {
     if (x <= y + 0.0005 && x >= y - 0.0005){
         return true;
