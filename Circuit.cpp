@@ -4,10 +4,22 @@
 
 #include "Circuit.h"
 
-Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _elements{std::move(elements)}, _freq{freq}{
+Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _elements{std::move(elements)}, _freq{freq} {
     _c_freq = (float) (2 * std::numbers::pi * _freq);
 
 //    TODO: if freq == 0 then check if element admittance == -1 then delete it from circuit
+    if (freq == 0) {
+        if (std::ranges::any_of(_elements.begin(), _elements.end(), [](const std::shared_ptr<Element> &e) {
+            return e->get_admittance(0) == std::complex<float>{-1, 0};})) {
+            throw std::invalid_argument(
+                    "With DC source capacitors are breaks and inductors acts like wires. Fix it or chagne source to AC.");
+        }
+    }
+    for (int i=0;i<_elements.size();i++){
+        if (_elements[i]->get_node1() == _elements[i]->get_node2()){
+            _elements.erase(_elements.begin() + i);
+        }
+    }
     std::map<int, int> nodes_counter;
     for (auto &element: _elements) {
         nodes_counter[element->get_node1()] += 1;
@@ -23,9 +35,7 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
         }
         if (node_value < 2){
             for (int i=0;i<_elements.size();i++){
-                if (_elements[i]->get_node1() == node || _elements[i]->get_node2() == node){
-                    _elements.erase(_elements.begin() + i);
-                }
+                _elements.erase(_elements.begin() + i);
             }
         }
         if (node_value > 2){
@@ -38,9 +48,11 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
         }
     }
     if (_nodes.empty()){
-        throw std::invalid_argument("Circuit is open.");
+        _branches["00"] = {_elements.begin(), _elements.end()};
     }
-    set_branches();
+    else{
+        set_branches();
+    }
 }
 
 std::shared_ptr<Element> Circuit::find_element(int node, int condition) const{
@@ -198,6 +210,10 @@ std::string Circuit::get_node_key(int node1, int node2) {
 }
 
 void Circuit::calculate() {
+    if (_nodes.empty()){
+        calculate_one_mesh();
+        return;
+    }
     unsigned int size = _nodes.size()-1;
     Eigen::MatrixXcf Y = Eigen::MatrixXcf::Zero(size, size);
     Eigen::VectorXcf I = Eigen::VectorXcf::Zero(size);
@@ -291,6 +307,14 @@ std::complex<float> Circuit::get_branch_admittance(const std::string& branch){
     return std::complex<float> {1, 0} / sum;
 }
 
+std::complex<float> Circuit::get_branch_impedance(const std::string& branch){
+    std::complex<float> sum(0, 0);
+    for (auto &item: _branches[branch]){
+        sum += item->get_impedance(_c_freq);
+    }
+    return sum;
+}
+
 void Circuit::calculate_elements_voltage() {
     for (auto &item: _branches){
         for (auto &element: item.second){
@@ -333,4 +357,22 @@ int Circuit::decode_matrix_node(int node) {
 
 int Circuit::char_to_int(char c) {
     return (int)(c - '0');
+}
+
+void Circuit::calculate_one_mesh() {
+    std::complex<float> voltage {0, 0};
+    auto branch_admittance = get_branch_admittance("00");
+    auto branch_impedance = get_branch_impedance("00");
+    for (auto &element: _elements){
+        if (!element->is_passive()) {
+            if (element->get_type() != Type::current) {
+                voltage += element->get_complex_value();
+            }
+            else{
+                voltage += element->get_complex_value() * branch_impedance;
+            }
+        }
+    }
+    _branch_voltage["00"] = voltage;
+    _branch_current["00"] = voltage * branch_admittance;
 }

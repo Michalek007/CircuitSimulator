@@ -43,9 +43,11 @@ public:
     std::string get_node_key(int node1, int node2);
     [[nodiscard]] std::shared_ptr<Element> find_element(int node, int condition=-1) const;
     std::complex<float> get_branch_admittance(const std::string& branch);
+    std::complex<float> get_branch_impedance(const std::string& branch);
     void calculate();
     void calculate_elements_voltage();
     void calculate_elements_current();
+    void calculate_one_mesh();
     int decode_matrix_node(int node);
     static int char_to_int(char c);
 
