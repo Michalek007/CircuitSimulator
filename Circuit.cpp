@@ -34,9 +34,25 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
             _ground = node;
         }
         if (node_value < 2){
-            for (int i=0;i<_elements.size();i++){
-                _elements.erase(_elements.begin() + i);
-            }
+                int checked_node = node;
+                bool dummy_variable {true};
+                while (dummy_variable){
+                    for (int i=0;i<_elements.size();i++){
+                        if (_elements[i]->get_node1() == checked_node || _elements[i]->get_node2() == checked_node) {
+                            checked_node = _elements[i]->get_node(checked_node);
+                            _elements.erase(_elements.begin() + i);
+                            if (nodes_counter[checked_node] >= 2) {
+                                nodes_counter[checked_node] -= 1;
+                                for (int j = 0; j < _nodes.size(); j++){
+                                    if (_nodes[j] == checked_node){
+                                        _nodes.erase(_nodes.begin() + j);
+                                    }
+                                }
+                                dummy_variable = false;
+                            }
+                        }
+                    }
+                }
         }
         if (node_value > 2){
             _nodes.push_back(node);

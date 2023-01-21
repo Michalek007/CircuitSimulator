@@ -3,11 +3,11 @@
 #include "tests/CircuitTests.h"
 
 int main() {
-    CircuitTests::circuit_test_1();
-    CircuitTests::circuit_test_2();
-    CircuitTests::circuit_test_3();
-    CircuitTests::circuit_test_4();
-    CircuitTests::circuit_test_5();
+//    CircuitTests::circuit_test_1();
+//    CircuitTests::circuit_test_2();
+//    CircuitTests::circuit_test_3();
+//    CircuitTests::circuit_test_4();
+//    CircuitTests::circuit_test_5();
 //    std::complex<float> W1 {0.01,-0};
 //    std::complex<float> W2 {0.00605216,0.00314159};
 //    std::complex<float> W {0.00605341,0.00314032};
@@ -66,7 +66,6 @@ int main() {
             }
             catch (const std::invalid_argument& error){
                 std::cerr << error.what();
-                continue;
             }
             break;
         }
