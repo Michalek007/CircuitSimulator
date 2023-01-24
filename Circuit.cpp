@@ -25,6 +25,30 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
         nodes_counter[element->get_node1()] += 1;
         nodes_counter[element->get_node2()] += 1;
     }
+    for (auto &n: nodes_counter){
+        int node = n.first;
+        int node_value = n.second;
+        if (node_value < 2){
+            int checked_node = node;
+            bool dummy_variable {true};
+            while (dummy_variable){
+                for (int i=0;i<_elements.size();i++){
+                    if (_elements[i]->get_node1() == checked_node || _elements[i]->get_node2() == checked_node) {
+
+                        checked_node = _elements[i]->get_node(checked_node);
+                        _elements.erase(_elements.begin() + i);
+                        nodes_counter[checked_node] -= 1;
+                        if (nodes_counter[checked_node] < 2) {
+                            continue;
+                        }
+                        else{
+                            dummy_variable = false;
+                        }
+                    }
+                }
+            }
+        }
+    }
     int value = 1;
     for (auto &n: nodes_counter){
         int node = n.first;
@@ -32,27 +56,6 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
         if (node_value > value){
             value = node_value;
             _ground = node;
-        }
-        if (node_value < 2){
-                int checked_node = node;
-                bool dummy_variable {true};
-                while (dummy_variable){
-                    for (int i=0;i<_elements.size();i++){
-                        if (_elements[i]->get_node1() == checked_node || _elements[i]->get_node2() == checked_node) {
-                            checked_node = _elements[i]->get_node(checked_node);
-                            _elements.erase(_elements.begin() + i);
-                            if (nodes_counter[checked_node] >= 2) {
-                                nodes_counter[checked_node] -= 1;
-                                for (int j = 0; j < _nodes.size(); j++){
-                                    if (_nodes[j] == checked_node){
-                                        _nodes.erase(_nodes.begin() + j);
-                                    }
-                                }
-                                dummy_variable = false;
-                            }
-                        }
-                    }
-                }
         }
         if (node_value > 2){
             _nodes.push_back(node);

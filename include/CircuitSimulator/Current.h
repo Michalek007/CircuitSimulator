@@ -17,8 +17,7 @@ private:
     float _phase;
     std::complex<float> _complex_v;
 public:
-    Current() = default;
-    explicit Current(float amp, float freq=0, float phase=0);
+    explicit Current(float amp=0, float freq=0, float phase=0);
     Current(std::complex<float> complex_v, float freq);
     [[nodiscard]] float get_amp() const {return _amp;}
     [[nodiscard]] float get_freq() const {return _freq;}
