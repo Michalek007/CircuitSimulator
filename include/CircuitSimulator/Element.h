@@ -38,6 +38,7 @@ public:
     [[nodiscard]] int get_node(int node) const;
     [[nodiscard]] std::string get_name() const {return _name;}
     void set_name(const std::string& name) {_name = name;}
+    void change_node_value (int node, int value);
     [[nodiscard]] virtual bool is_passive() const {return true;}
     [[nodiscard]] virtual std::complex<float> get_impedance(float c_freq) const {return {0,0};}
     [[nodiscard]] virtual std::complex<float> get_admittance(float c_freq) const {return {0,0};}

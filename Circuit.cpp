@@ -7,14 +7,6 @@
 Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _elements{std::move(elements)}, _freq{freq} {
     _c_freq = (float) (2 * std::numbers::pi * _freq);
 
-//    TODO: if freq == 0 then check if element admittance == -1 then delete it from circuit
-    if (freq == 0) {
-        if (std::ranges::any_of(_elements.begin(), _elements.end(), [](const std::shared_ptr<Element> &e) {
-            return e->get_admittance(0) == std::complex<float>{-1, 0};})) {
-            throw std::invalid_argument(
-                    "With DC source capacitors are breaks and inductors acts like wires. Fix it or change source to AC.");
-        }
-    }
     for (int i=0;i<_elements.size();i++){
         if (_elements[i]->get_node1() == _elements[i]->get_node2()){
             _elements.erase(_elements.begin() + i);
@@ -25,6 +17,38 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
         nodes_counter[element->get_node1()] += 1;
         nodes_counter[element->get_node2()] += 1;
     }
+    //    TODO: if freq == 0 then check if element admittance == -1 then delete it from circuit
+//    if (freq == 0) {
+//        if (std::ranges::any_of(_elements.begin(), _elements.end(), [](const std::shared_ptr<Element> &e) {
+//            return e->get_admittance(0) == std::complex<float>{-1, 0};})) {
+//            throw std::invalid_argument(
+//                    "With DC source capacitors are breaks and inductors acts like wires. Fix it or change source to AC.");
+//        }
+//    }
+    if (freq == 0) {
+        for (int i=0;i<_elements.size();i++){
+            if (_elements[i]->get_impedance(_c_freq) == std::complex<float>{0, 0} && _elements[i]->is_passive()){
+                int node1 = _elements[i]->get_node1();
+                int node2 = _elements[i]->get_node2();
+                _elements.erase(_elements.begin() + i);
+                auto element1 = find_element(node1);
+                auto element2 = find_element(node2);
+                if (nodes_counter[node1] >= nodes_counter[node2]){
+                    element2->change_node_value(node2, node1);
+                }
+                else {
+                    element1->change_node_value(node1, node2);
+                }
+            }
+            if (_elements[i]->get_impedance(_c_freq) == std::complex<float> {-1, 0} && _elements[i]->is_passive()){
+                int node1 = _elements[i]->get_node1();
+                int node2 = _elements[i]->get_node2();
+                _elements.erase(_elements.begin() + i);
+                nodes_counter[node1] -= 1;
+                nodes_counter[node2] -= 1;
+            }
+        }
+    }
     for (auto &n: nodes_counter){
         int node = n.first;
         int node_value = n.second;
@@ -32,7 +56,10 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
             int checked_node = node;
             bool dummy_variable {true};
             while (dummy_variable){
-                for (int i=0;i<_elements.size();i++){
+                if (_elements.empty()){
+                    break;
+                }
+                    for (int i=0;i<_elements.size();i++){
                     if (_elements[i]->get_node1() == checked_node || _elements[i]->get_node2() == checked_node) {
 
                         checked_node = _elements[i]->get_node(checked_node);
@@ -49,6 +76,11 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
             }
         }
     }
+
+    if (_elements.empty()){
+        throw std::invalid_argument("Open circuit. ");
+    }
+
     int value = 1;
     for (auto &n: nodes_counter){
         int node = n.first;

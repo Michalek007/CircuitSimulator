@@ -13,7 +13,7 @@ std::complex<float>  Capacitor::get_impedance(float c_freq) const {
 
 std::complex<float> Capacitor::get_admittance(float c_freq) const {
     if (c_freq == 0){
-        return {-1, 0};
+        return {0, 0};
     }
     return {0, _capacity * c_freq};
 }

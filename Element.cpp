@@ -15,3 +15,15 @@ int Element::get_node(int node) const {
         return -1;
     }
 }
+
+void Element::change_node_value(int node, int value) {
+    if (_node1 == node){
+        _node1 = value;
+    }
+    else if (_node2 == node){
+        _node2 = value;
+    }
+    else{
+        throw std::invalid_argument(" Invalid node.");
+    }
+}
