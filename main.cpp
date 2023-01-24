@@ -19,44 +19,18 @@ int main() {
 //    std::cout << CircuitTests::float_comparison(0.999924, 0.9998) << std::endl;
     std::vector<std::shared_ptr<Element>> elements;
     char type;
-    int node1;
-    int node2;
+    int node1, node2;
     float value;
     float freq {0};
     std::string source_type;
+    bool dummy_variable {false};
     while (true){
         std::shared_ptr<Element> e;
         std::cout << "Type: " << std::endl;
         std::cin >> type;
         std::cout << type << std::endl;
-        std::cout << "Nodes: " << std::endl;
-        std::cin >> node1 >> node2;
-        std::cout << node1 << node2 << std::endl;
-        std::cout << "Value: " << std::endl;
-        std::cin >> value;
-        std::cout << value << std::endl;
-        if (type == 'r') {
-            e = std::make_shared<Resistor>(node1, node2, value);
-        }
-        else if (type == 'c'){
-            e = std::make_shared<Capacitor>(node1, node2, value);
-        }
-        else if (type == 'l'){
-            e = std::make_shared<Inductor>(node1, node2, value);
-        }
-        else if (type == 'v'){
-            std::cout << "Freq: " << std::endl;
-            std::cin >> freq;
-            std::cout << freq << std::endl;
-            e = std::make_shared<Source>(node1, node2, value, Type::voltage, freq);
-        }
-        else if (type == 'a'){
-            std::cout << "Freq: " << std::endl;
-            std::cin >> freq;
-            std::cout << freq << std::endl;
-            e = std::make_shared<Source>(node1, node2, value, Type::current, freq);
-        }
-        else if (type == 'x'){
+
+        if (type == 'x'){
             try{
                 Circuit circuit {elements, freq};
                 circuit.calculate();
@@ -68,6 +42,38 @@ int main() {
                 std::cerr << error.what();
             }
             break;
+        }
+
+        std::cout << "Nodes: " << std::endl;
+        std::cin >> node1 >> node2;
+        std::cout << node1 << node2 << std::endl;
+        std::cout << "Value: " << std::endl;
+        std::cin >> value;
+        std::cout << value << std::endl;
+
+        if (type == 'r') {
+            e = std::make_shared<Resistor>(node1, node2, value);
+        }
+        else if (type == 'c'){
+            e = std::make_shared<Capacitor>(node1, node2, value);
+        }
+        else if (type == 'l'){
+            e = std::make_shared<Inductor>(node1, node2, value);
+        }
+        else if (type == 'v'){
+            if (!dummy_variable){
+                std::cout << "Freq: " << std::endl;
+                std::cin >> freq;
+                std::cout << freq << std::endl;
+                dummy_variable = true;
+            }
+            e = std::make_shared<Source>(node1, node2, value, Type::voltage, freq);
+        }
+        else if (type == 'a'){
+            std::cout << "Freq: " << std::endl;
+            std::cin >> freq;
+            std::cout << freq << std::endl;
+            e = std::make_shared<Source>(node1, node2, value, Type::current, freq);
         }
         else{
             std::cout << "Wrong element." << std::endl;
