@@ -17,7 +17,7 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
         nodes_counter[element->get_node1()] += 1;
         nodes_counter[element->get_node2()] += 1;
     }
-    //    TODO: if freq == 0 then check if element admittance == -1 then delete it from circuit
+//    TODO: if freq == 0 then check if element admittance == -1 then delete it from circuit
 //    if (freq == 0) {
 //        if (std::ranges::any_of(_elements.begin(), _elements.end(), [](const std::shared_ptr<Element> &e) {
 //            return e->get_admittance(0) == std::complex<float>{-1, 0};})) {
@@ -103,6 +103,17 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
     }
     else{
         set_branches();
+        for (auto &branch: _branches){
+            if (get_branch_impedance(branch.first) != std::complex<float>{0, 0}){
+                continue;
+            }
+            for (auto &element: branch.second){
+                if (!element->is_passive() && element->get_type() == Type::voltage) {
+                    throw std::invalid_argument(
+                        "There is no impedance at branch with voltage source, so nodal analysis can not be performed.");
+                }
+            }
+        }
     }
 }
 
@@ -159,6 +170,12 @@ void Circuit::display_matrix_nodes() const {
 
 void Circuit::display_branches_voltage() const {
     for (auto &item: _branch_voltage){
+        std::cout << item.first << ":" << std::endl;
+        std::cout << abs(item.second) << std::endl;
+        std::cout << arg(item.second) << std::endl;
+    }
+
+    for (auto &item: _branch_current){
         std::cout << item.first << ":" << std::endl;
         std::cout << abs(item.second) << std::endl;
         std::cout << arg(item.second) << std::endl;
@@ -381,7 +398,7 @@ void Circuit::calculate_elements_current() {
     for (auto &item: _branches){
         std::string key {item.first[0], item.first[1]};
         for (auto &element: item.second){
-            _element_current[element] = Current{_branch_voltage[key] * element->get_admittance(_c_freq), _freq};
+            _element_current[element] = Current{_branch_current[item.first], _freq};
         }
     }
 }

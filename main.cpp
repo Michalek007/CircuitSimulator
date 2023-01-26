@@ -37,6 +37,7 @@ int main() {
                 circuit.calculate_elements_current();
                 circuit.calculate_elements_voltage();
                 circuit.display_elements_properties();
+                circuit.display_branches_voltage();
             }
             catch (const std::invalid_argument& error){
                 std::cerr << error.what();

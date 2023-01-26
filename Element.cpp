@@ -19,9 +19,11 @@ int Element::get_node(int node) const {
 void Element::change_node_value(int node, int value) {
     if (_node1 == node){
         _node1 = value;
+        _name = _name[0] + std::to_string(_node1) + std::to_string(_node2);
     }
     else if (_node2 == node){
         _node2 = value;
+        _name = _name[0] + std::to_string(_node1) + std::to_string(_node2);
     }
     else{
         throw std::invalid_argument(" Invalid node.");
