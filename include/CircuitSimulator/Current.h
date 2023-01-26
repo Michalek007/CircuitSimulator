@@ -5,10 +5,10 @@
 #ifndef CIRCUITSIMULATOR_CURRENT_H
 #define CIRCUITSIMULATOR_CURRENT_H
 
-#include "Element.h"
-#include "Source.h"
+#include <iostream>
+#include <complex>
+#include <cmath>
 
-// TODO: just like for the Voltage
 class Current {
 private:
     float _amp;

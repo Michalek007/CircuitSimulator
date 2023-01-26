@@ -26,12 +26,12 @@ void Current::display() const {
     }
     std::cout << _amp << " * sin(" << _c_freq;
     if (_phase > 0){
-        std::cout << " + " << _phase << ")" << std::endl;
+        std::cout << " + " << _phase << ") A" << std::endl;
     }
     else if (_phase < 0){
-        std::cout << " " << _phase << ")" << std::endl;
+        std::cout << " " << _phase << ") A" << std::endl;
     }
     else{
-        std::cout << ")" << std::endl;
+        std::cout << ") A" << std::endl;
     }
 }

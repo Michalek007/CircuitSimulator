@@ -17,14 +17,6 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
         nodes_counter[element->get_node1()] += 1;
         nodes_counter[element->get_node2()] += 1;
     }
-//    TODO: if freq == 0 then check if element admittance == -1 then delete it from circuit
-//    if (freq == 0) {
-//        if (std::ranges::any_of(_elements.begin(), _elements.end(), [](const std::shared_ptr<Element> &e) {
-//            return e->get_admittance(0) == std::complex<float>{-1, 0};})) {
-//            throw std::invalid_argument(
-//                    "With DC source capacitors are breaks and inductors acts like wires. Fix it or change source to AC.");
-//        }
-//    }
     if (freq == 0) {
         for (int i=0;i<_elements.size();i++){
             if (_elements[i]->get_impedance(_c_freq) == std::complex<float>{0, 0} && _elements[i]->is_passive()){
@@ -396,8 +388,11 @@ void Circuit::calculate_elements_voltage() {
 
 void Circuit::calculate_elements_current() {
     for (auto &item: _branches){
-        std::string key {item.first[0], item.first[1]};
+//        std::string key {item.first[0], item.first[1]};
         for (auto &element: item.second){
+            if (!element->is_passive()){
+                continue;
+            }
             _element_current[element] = Current{_branch_current[item.first], _freq};
         }
     }

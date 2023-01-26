@@ -10,8 +10,8 @@
 #include "Inductor.h"
 #include "Capacitor.h"
 #include "Resistor.h"
-#include "Voltage.h"
-#include "Current.h"
+#include "Source.h"
+
 
 class Circuit {
 private:
@@ -29,28 +29,32 @@ private:
     int _ground;
     float _freq;
     float _c_freq;
+
     int last_node_value = 0;
+    std::string get_node_key(int node1, int node2);
+    int decode_matrix_node(int node);
+    static int char_to_int(char c);
+
+    void set_branches();
+    void calculate_one_mesh();
+
 public:
     explicit Circuit(std::vector<std::shared_ptr<Element>> elements, float freq=0);
+
     void display_nodes() const;
     void display_node_elements() const;
     void display_branch() const;
     void display_matrix_nodes() const;
     void display_branches_voltage() const;
     void display_elements_properties();
-    void set_branches();
+
     [[nodiscard]] bool is_node(int node) const;
-    std::string get_node_key(int node1, int node2);
     [[nodiscard]] std::shared_ptr<Element> find_element(int node, int condition=-1) const;
     std::complex<float> get_branch_admittance(const std::string& branch);
     std::complex<float> get_branch_impedance(const std::string& branch);
     void calculate();
     void calculate_elements_voltage();
     void calculate_elements_current();
-    void calculate_one_mesh();
-    int decode_matrix_node(int node);
-    static int char_to_int(char c);
-
 };
 
 

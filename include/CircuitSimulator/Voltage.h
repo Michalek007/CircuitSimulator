@@ -5,15 +5,9 @@
 #ifndef CIRCUITSIMULATOR_VOLTAGE_H
 #define CIRCUITSIMULATOR_VOLTAGE_H
 
-#include "Element.h"
-#include "Source.h"
-
-// TODO: class Voltage with _phase, _freq, _c_freq, _amp, _complex_v
-// constructor with _complex_value, _freq
-// constructor with _phase, _freq, _amp
-// getters
-// override operators for ostream
-// or method display
+#include <iostream>
+#include <complex>
+#include <cmath>
 
 class Voltage {
 private:

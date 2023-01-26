@@ -14,7 +14,8 @@
 #include <algorithm>
 #include <unordered_set>
 #include <complex>
-
+#include "Voltage.h"
+#include "Current.h"
 
 enum class Type{
     current = 0,
@@ -35,17 +36,19 @@ public:
     explicit Element(int node1, int node2): _node1{node1}, _node2{node2}{}
     [[nodiscard]] int get_node1() const {return _node1;}
     [[nodiscard]] int get_node2() const {return _node2;}
-    [[nodiscard]] int get_node(int node) const;
+    [[nodiscard]] virtual float get_properties() const = 0;
     [[nodiscard]] std::string get_name() const {return _name;}
     void set_name(const std::string& name) {_name = name;}
     void change_node_value (int node, int value);
-    [[nodiscard]] virtual bool is_passive() const {return true;}
-    [[nodiscard]] virtual std::complex<float> get_impedance(float c_freq) const {return {0,0};}
-    [[nodiscard]] virtual std::complex<float> get_admittance(float c_freq) const {return {0,0};}
-    [[nodiscard]] virtual std::complex<float> get_voltage(std::complex<float> current) const {return {0,0};}
-    [[nodiscard]] virtual std::complex<float> get_current(std::complex<float> voltage) const {return {0,0};}
-    [[nodiscard]] virtual std::complex<float> get_complex_value() const {return {0,0};}
-    [[nodiscard]] virtual Type get_type() const {return Type::passive;}
+
+    [[nodiscard]] int get_node(int node) const;
+    [[nodiscard]] virtual Type get_type() const = 0;
+    [[nodiscard]] virtual bool is_passive() const = 0;
+    [[nodiscard]] virtual std::complex<float> get_impedance(float c_freq) const = 0;
+    [[nodiscard]] virtual std::complex<float> get_admittance(float c_freq) const = 0;
+    [[nodiscard]] virtual std::complex<float> get_complex_value() const = 0;
+//    [[nodiscard]] virtual Voltage get_voltage(std::complex<float> current) const = 0;
+//    [[nodiscard]] virtual Current get_current(std::complex<float> voltage) const = 0;
 
     ~Element() = default;
 };
