@@ -4,10 +4,6 @@
 
 #include "Interface.h"
 
-void Interface::change_mode() {
-    _auto_mode = !_auto_mode;
-}
-
 std::vector<std::shared_ptr<Element>> Interface::get_elements() {
     std::vector<std::shared_ptr<Element>> elements;
     std::string type {"help"};
@@ -28,6 +24,7 @@ std::vector<std::shared_ptr<Element>> Interface::get_elements() {
                 std::cout << item << " ";
             }
             std::cout << std::endl;
+            continue;
         }
 
         if (type == "x"){
@@ -102,5 +99,74 @@ void Interface::auto_setup() {
 void Interface::user_interface() {
     std::cout << "Circuit Simulator. " << " Enter your elements with following instruction: type, first node, second node, value and eventually freq." << std::endl;
     std::cout << "Type help to get command list. " << std::endl;
+    auto elements = get_elements();
+    while (true){
+        std::string command;
+        try{
+            auto circuit = create_circuit(elements);
+            display_branches(circuit);
+        }
+        catch (const std::invalid_argument& error){
+            std::cerr << error.what();
+        }
+        while (true){
+            std::cout << "This is your circuit. You can calculate it, reset all circuit, add or remove element . (calculate/reset/add/remove) " << std::endl;
+            std::cin >> command;
+            if (!std::ranges::any_of(_types.begin(), _types.end(), [&command](const std::string& c){return command == c;})){
+                std::cout << "There is no such command. Write help to get list of commands." << std::endl;
+                continue;
+            }
+            if (command == "reset"){
+                break;
+            }
+            else if (command == "calculate"){
+                auto circuit = create_circuit(elements);
+                solve_circuit(circuit);
+                display_branch_current(circuit);
+                display_branch_voltage(circuit);
+                display_all_elements(circuit);
+            }
+            else if (command == "help"){
+                std::cout << "All available commands: " << std::endl;
+                for (auto &item: _commands){
+                    std::cout << item << " ";
+                }
+                std::cout << std::endl;
+                continue;
+            }
+        }
+    }
+}
 
+void Interface::display_branches(const Circuit &circuit) {
+}
+
+void Interface::solve_circuit(Circuit &circuit) {
+    circuit.calculate();
+    circuit.calculate_elements_voltage();
+    circuit.calculate_elements_current();
+}
+
+void Interface::display_branch_voltage(const Circuit &circuit) const {
+    for (auto &voltage: circuit.get_branches_voltage()){
+        Voltage v {voltage.second, _freq};
+        v.display();
+    }
+}
+
+void Interface::display_branch_current(const Circuit &circuit) const {
+    for (auto &current: circuit.get_branches_current()){
+        Current c {current.second, _freq};
+        c.display();
+    }
+}
+
+void Interface::display_all_elements(const Circuit &circuit) {
+    for (auto &voltage: circuit.get_elements_voltage()){
+        std::cout << voltage.first ->get_name() << std:: endl;
+        voltage.second.display();
+    }
+    for (auto &current: circuit.get_elements_current()){
+        current.second.display();
+    }
 }

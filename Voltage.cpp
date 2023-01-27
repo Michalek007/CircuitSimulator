@@ -22,17 +22,18 @@ void Voltage::display() const {
         return;
     }
     if (_freq == 0){
-        std::cout << _amp << std::endl;
+        std::cout << "Voltage: " << _amp << std::endl;
         return;
     }
-    std::cout << _amp << " * sin(" << _c_freq;
-    if (_phase > 0){
-        std::cout << " + " << _phase << ") V" << std::endl;
-    }
-    else if (_phase < 0){
-        std::cout << " " << _phase << ") V" << std::endl;
-    }
-    else{
-        std::cout << ") V" << std::endl;
-    }
+//    std::cout << _amp << " * sin(" << _c_freq;
+//    if (_phase > 0){
+//        std::cout << " + " << _phase << ") V" << std::endl;
+//    }
+//    else if (_phase < 0){
+//        std::cout << " " << _phase << ") V" << std::endl;
+//    }
+//    else{
+//        std::cout << ") V" << std::endl;
+//    }
+    std::cout << "Voltage: " << _amp  << " Phase: " << _phase << std::endl;
 }
