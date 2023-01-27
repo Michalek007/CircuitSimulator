@@ -46,7 +46,13 @@ public:
     void display_branch() const;
     void display_matrix_nodes() const;
     void display_branches_voltage() const;
+    void display_branches_current() const;
     void display_elements_properties();
+
+    std::map<std::shared_ptr<Element>, Voltage> get_elements_voltage() const {return _element_voltage;}
+    std::map<std::shared_ptr<Element>, Current> get_elements_current() const {return _element_current;}
+    std::map<std::string, std::complex<float>> get_branches_voltage() const {return _branch_current;}
+    std::map<std::string, std::complex<float>>  get_branches_current() const {return _branch_voltage;}
 
     [[nodiscard]] bool is_node(int node) const;
     [[nodiscard]] std::shared_ptr<Element> find_element(int node, int condition=-1) const;

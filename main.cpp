@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Circuit.h"
 #include "tests/CircuitTests.h"
+#include "Interface.h"
 
 int main() {
 //    CircuitTests::circuit_test_1();
@@ -8,15 +9,10 @@ int main() {
 //    CircuitTests::circuit_test_3();
 //    CircuitTests::circuit_test_4();
 //    CircuitTests::circuit_test_5();
-//    std::complex<float> W1 {0.01,-0};
-//    std::complex<float> W2 {0.00605216,0.00314159};
-//    std::complex<float> W {0.00605341,0.00314032};
-//    std::cout << W1/W << std::endl;
-//    std::cout << abs(W1/W) << std::endl;
-//    std::cout << W2/W << std::endl;
-//    std::cout << abs(W2/W) << std::endl;
-//    std::cout << CircuitTests::float_comparison(0.739836, 0.74) << std::endl;
-//    std::cout << CircuitTests::float_comparison(0.999924, 0.9998) << std::endl;
+
+//    Interface::GetInstance().change_mode();
+//    Interface::GetInstance().get_elements();
+//    Interface::GetInstance().get_user_action();
     std::vector<std::shared_ptr<Element>> elements;
     char type;
     int node1, node2;

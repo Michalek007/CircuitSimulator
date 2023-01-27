@@ -109,6 +109,56 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
     }
 }
 
+int Circuit::decode_matrix_node(int node) {
+    for (auto &item: _matrix_nodes){
+        if (item.second == node){
+            return item.first;
+        }
+    }
+    throw std::invalid_argument("Invalid node.");
+}
+
+int Circuit::char_to_int(char c) {
+    return (int)(c - '0');
+}
+
+bool Circuit::is_node(int node) const {
+    if (std::ranges::any_of(_nodes.begin(), _nodes.end(), [&node](int n){return n==node;})){
+        return true;
+    }
+    return false;
+}
+
+std::string Circuit::get_node_key(int node1, int node2) {
+    if (!_matrix_nodes.contains(node1)){
+        if (node1 == _ground){
+            _matrix_nodes[node1] = 0;
+        }
+        else{
+            _matrix_nodes[node1] = last_node_value + 1;
+            last_node_value += 1;
+        }
+    }
+    if (!_matrix_nodes.contains(node2)){
+        if (node2 == _ground){
+            _matrix_nodes[node2] = 0;
+        }
+        else {
+            _matrix_nodes[node2] = last_node_value + 1;
+            last_node_value += 1;
+        }
+    }
+    if (node1 > node2){
+        return std::to_string(node2) + std::to_string(node1);
+    }
+    else if (node1 < node2){
+        return std::to_string(node1) + std::to_string(node2);
+    }
+    else{
+        throw std::invalid_argument("Invalid branch.");
+    }
+}
+
 std::shared_ptr<Element> Circuit::find_element(int node, int condition) const{
     for (auto &element: _elements){
         if (element->get_node1() == node){
@@ -174,15 +224,23 @@ void Circuit::display_branches_voltage() const {
     }
 }
 
+void Circuit::display_elements_properties() {
+    for (auto &element: _elements){
+        if (!element->is_passive()){
+            continue;
+        }
+        std::cout << element->get_name() << std::endl;
+        _element_voltage[element].display();
+        _element_current[element].display();
+    }
+}
+
 void Circuit::set_branches(){
     int memory {0};
     for (auto node: _nodes){
         for (auto &element: _node_elements[node]) {
             int condition {0};
             for (auto &vec: _branches){
-//                if ((int)(vec.first[0]-'0') == node || (int)(vec.first[1]-'0') == node){
-//
-//                }
                 for (auto &item: vec.second){
                     if (element == item) condition = 1;
                 }
@@ -229,43 +287,6 @@ void Circuit::set_branches(){
                 }
             }
         }
-    }
-}
-
-bool Circuit::is_node(int node) const {
-    if (std::ranges::any_of(_nodes.begin(), _nodes.end(), [&node](int n){return n==node;})){
-        return true;
-    }
-    return false;
-}
-
-std::string Circuit::get_node_key(int node1, int node2) {
-    if (!_matrix_nodes.contains(node1)){
-        if (node1 == _ground){
-            _matrix_nodes[node1] = 0;
-        }
-        else{
-            _matrix_nodes[node1] = last_node_value + 1;
-            last_node_value += 1;
-        }
-    }
-    if (!_matrix_nodes.contains(node2)){
-        if (node2 == _ground){
-            _matrix_nodes[node2] = 0;
-        }
-        else {
-            _matrix_nodes[node2] = last_node_value + 1;
-            last_node_value += 1;
-        }
-    }
-    if (node1 > node2){
-        return std::to_string(node2) + std::to_string(node1);
-    }
-    else if (node1 < node2){
-        return std::to_string(node1) + std::to_string(node2);
-    }
-    else{
-        throw std::invalid_argument("Invalid branch.");
     }
 }
 
@@ -396,30 +417,6 @@ void Circuit::calculate_elements_current() {
             _element_current[element] = Current{_branch_current[item.first], _freq};
         }
     }
-}
-
-void Circuit::display_elements_properties() {
-    for (auto &element: _elements){
-        if (!element->is_passive()){
-            continue;
-        }
-        std::cout << element->get_name() << std::endl;
-        _element_voltage[element].display();
-        _element_current[element].display();
-    }
-}
-
-int Circuit::decode_matrix_node(int node) {
-    for (auto &item: _matrix_nodes){
-        if (item.second == node){
-            return item.first;
-        }
-    }
-    throw std::invalid_argument("Invalid node.");
-}
-
-int Circuit::char_to_int(char c) {
-    return (int)(c - '0');
 }
 
 void Circuit::calculate_one_mesh() {

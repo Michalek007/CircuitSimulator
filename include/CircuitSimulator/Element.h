@@ -36,12 +36,12 @@ public:
     explicit Element(int node1, int node2): _node1{node1}, _node2{node2}{}
     [[nodiscard]] int get_node1() const {return _node1;}
     [[nodiscard]] int get_node2() const {return _node2;}
-    [[nodiscard]] virtual float get_properties() const = 0;
     [[nodiscard]] std::string get_name() const {return _name;}
     void set_name(const std::string& name) {_name = name;}
     void change_node_value (int node, int value);
 
     [[nodiscard]] int get_node(int node) const;
+    [[nodiscard]] virtual float get_properties() const = 0;
     [[nodiscard]] virtual Type get_type() const = 0;
     [[nodiscard]] virtual bool is_passive() const = 0;
     [[nodiscard]] virtual std::complex<float> get_impedance(float c_freq) const = 0;
