@@ -6,7 +6,12 @@
 
 Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _elements{std::move(elements)}, _freq{freq} {
     _c_freq = (float) (2 * std::numbers::pi * _freq);
+    set_circuit(_elements, _freq);
+}
 
+void Circuit::set_circuit(const std::vector<std::shared_ptr<Element>>& elements, float freq) {
+    _elements = elements;
+    _freq = freq;
     for (int i=0;i<_elements.size();i++){
         if (_elements[i]->get_node1() == _elements[i]->get_node2()){
             _elements.erase(_elements.begin() + i);
@@ -51,7 +56,7 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
                 if (_elements.empty()){
                     break;
                 }
-                    for (int i=0;i<_elements.size();i++){
+                for (int i=0;i<_elements.size();i++){
                     if (_elements[i]->get_node1() == checked_node || _elements[i]->get_node2() == checked_node) {
 
                         checked_node = _elements[i]->get_node(checked_node);
@@ -102,12 +107,13 @@ Circuit::Circuit(std::vector<std::shared_ptr<Element>> elements, float freq): _e
             for (auto &element: branch.second){
                 if (!element->is_passive() && element->get_type() == Type::voltage) {
                     throw std::invalid_argument(
-                        "There is no impedance at branch with voltage source, so nodal analysis can not be performed.");
+                            "There is no impedance at branch with voltage source, so nodal analysis can not be performed.");
                 }
             }
         }
     }
 }
+
 
 int Circuit::decode_matrix_node(int node) {
     for (auto &item: _matrix_nodes){
@@ -349,7 +355,6 @@ void Circuit::calculate() {
         for (int j=0;j<size;j++){
             Yi(j, i) = I(j);
         }
-        std::cout << "___________________" << std::endl;
 //        std::cout << Yi << std::endl;
 //        std::cout << Yi.determinant() << std::endl;
 //        std::cout << Y.determinant() << std::endl;
@@ -357,9 +362,9 @@ void Circuit::calculate() {
         auto yi = Yi.determinant();
         auto y = Y.determinant();
         Vi = yi/y;
-        std::cout << yi << std::endl;
-        std::cout << y << std::endl;
-        std::cout << Vi << std::endl;
+//        std::cout << yi << std::endl;
+//        std::cout << y << std::endl;
+//        std::cout << Vi << std::endl;
         _branch_voltage[get_node_key(0, decode_matrix_node(i+1))] = Vi;
     }
 //    for (int n=0;n< tgamma(size+1)/tgamma(size-1)/2;n++){

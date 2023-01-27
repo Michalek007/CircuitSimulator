@@ -97,34 +97,53 @@ void Interface::auto_setup() {
 }
 
 void Interface::user_interface() {
-    std::cout << "Circuit Simulator. " << " Enter your elements with following instruction: type, first node, second node, value and eventually freq." << std::endl;
+    std::cout << "Welcome in Circuit Simulator! " << " Enter your elements with the following order: type, first node, second node, value and eventually freq." << std::endl;
     std::cout << "Type help to get command list. " << std::endl;
-    auto elements = get_elements();
+    _elements = get_elements();
     while (true){
         std::string command;
         try{
-            auto circuit = create_circuit(elements);
-            display_branches(circuit);
+            _circuit = create_circuit(_elements);
+            display_branches();
         }
         catch (const std::invalid_argument& error){
             std::cerr << error.what();
         }
         while (true){
-            std::cout << "This is your circuit. You can calculate it, reset all circuit, add or remove element . (calculate/reset/add/remove) " << std::endl;
+            std::cout << "That's your circuit. You can calculate it, reset all, add or remove element (calculate/reset/add/remove) " << std::endl;
             std::cin >> command;
-            if (!std::ranges::any_of(_types.begin(), _types.end(), [&command](const std::string& c){return command == c;})){
+            if (!std::ranges::any_of(_commands.begin(), _commands.end(), [&command](const std::string& c){return command == c;})){
                 std::cout << "There is no such command. Write help to get list of commands." << std::endl;
                 continue;
             }
             if (command == "reset"){
                 break;
             }
+            else if (command == "add"){
+
+            }
+            else if (command == "remove"){
+                std::string name;
+                std::cout << "Type name of the element that you want to delete. " << std::endl;
+                std::cin >> name;
+                for (int i =0;i < _elements.size();i++){
+                    if (_elements[i]->get_name() == name){
+                        _elements.erase(_elements.begin() + i);
+                        std::cout << "Element removed successfully. " << std::endl;
+                    }
+                }
+            }
             else if (command == "calculate"){
-                auto circuit = create_circuit(elements);
-                solve_circuit(circuit);
-                display_branch_current(circuit);
-                display_branch_voltage(circuit);
-                display_all_elements(circuit);
+                try{
+                    _circuit.set_circuit(_elements, _freq);
+                }
+                catch (const std::invalid_argument& error){
+                    std::cerr << error.what();
+                }
+                solve_circuit();
+                display_branch_current();
+                display_branch_voltage();
+                display_all_elements();
             }
             else if (command == "help"){
                 std::cout << "All available commands: " << std::endl;
@@ -138,35 +157,52 @@ void Interface::user_interface() {
     }
 }
 
-void Interface::display_branches(const Circuit &circuit) {
+void Interface::display_branches() {
+    for (auto &branch: _circuit.get_branches()){
+        std::cout << "Branch: " << branch.first << std::endl;
+        for (auto &item: branch.second){
+            std::cout << item->get_name() << " ";
+        }
+        std::cout << std::endl;
+    }
 }
 
-void Interface::solve_circuit(Circuit &circuit) {
-    circuit.calculate();
-    circuit.calculate_elements_voltage();
-    circuit.calculate_elements_current();
+void Interface::solve_circuit() {
+    _circuit.calculate();
+    _circuit.calculate_elements_voltage();
+    _circuit.calculate_elements_current();
 }
 
-void Interface::display_branch_voltage(const Circuit &circuit) const {
-    for (auto &voltage: circuit.get_branches_voltage()){
+void Interface::display_branch_voltage() const {
+    for (auto &voltage: _circuit.get_branches_voltage()){
         Voltage v {voltage.second, _freq};
         v.display();
     }
 }
 
-void Interface::display_branch_current(const Circuit &circuit) const {
-    for (auto &current: circuit.get_branches_current()){
+void Interface::display_branch_current() const {
+    for (auto &current: _circuit.get_branches_current()){
         Current c {current.second, _freq};
         c.display();
     }
 }
 
-void Interface::display_all_elements(const Circuit &circuit) {
-    for (auto &voltage: circuit.get_elements_voltage()){
+void Interface::display_all_elements() {
+    for (auto &voltage: _circuit.get_elements_voltage()){
         std::cout << voltage.first ->get_name() << std:: endl;
         voltage.second.display();
     }
-    for (auto &current: circuit.get_elements_current()){
+    for (auto &current: _circuit.get_elements_current()){
         current.second.display();
+    }
+}
+
+void Interface::display_element_properties(const std::string& name) {
+    for (auto &element: _elements){
+        if (element->get_name() == name){
+            std::cout << name << "  " << element->get_properties() << std::endl;
+            _circuit.get_elements_current()[element].display();
+            _circuit.get_elements_voltage()[element].display();
+        }
     }
 }

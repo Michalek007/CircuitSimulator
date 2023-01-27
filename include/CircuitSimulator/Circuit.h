@@ -40,24 +40,27 @@ private:
 
 public:
     explicit Circuit(std::vector<std::shared_ptr<Element>> elements, float freq=0);
+    Circuit() = default;
 
     void display_nodes() const;
     void display_node_elements() const;
     void display_branch() const;
     void display_matrix_nodes() const;
     void display_branches_voltage() const;
-    void display_branches_current() const;
     void display_elements_properties();
 
-    std::map<std::shared_ptr<Element>, Voltage> get_elements_voltage() const {return _element_voltage;}
-    std::map<std::shared_ptr<Element>, Current> get_elements_current() const {return _element_current;}
-    std::map<std::string, std::complex<float>> get_branches_voltage() const {return _branch_current;}
-    std::map<std::string, std::complex<float>>  get_branches_current() const {return _branch_voltage;}
+    [[nodiscard]] std::map<std::shared_ptr<Element>, Voltage> get_elements_voltage() const {return _element_voltage;}
+    [[nodiscard]] std::map<std::shared_ptr<Element>, Current> get_elements_current() const {return _element_current;}
+    [[nodiscard]] std::map<std::string, std::complex<float>> get_branches_voltage() const {return _branch_current;}
+    [[nodiscard]] std::map<std::string, std::complex<float>>  get_branches_current() const {return _branch_voltage;}
+    [[nodiscard]] std::map<std::string, std::unordered_set<std::shared_ptr<Element>>> get_branches() {return _branches;}
 
     [[nodiscard]] bool is_node(int node) const;
     [[nodiscard]] std::shared_ptr<Element> find_element(int node, int condition=-1) const;
     std::complex<float> get_branch_admittance(const std::string& branch);
     std::complex<float> get_branch_impedance(const std::string& branch);
+
+    void set_circuit(const std::vector<std::shared_ptr<Element>>& elements, float freq=0);
     void calculate();
     void calculate_elements_voltage();
     void calculate_elements_current();
