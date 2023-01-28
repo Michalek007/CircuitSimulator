@@ -25,8 +25,6 @@ void CircuitTests::circuit_test_1() {
     std::vector<std::shared_ptr<Element>> elements {e1, e2, e3, e4, e5, e6, e7, e8};
     Circuit circuit {elements, 100};
 
-//    circuit.display_branch();
-//    circuit.display_matrix_nodes();
     circuit.calculate();
     circuit.calculate_elements_voltage();
     circuit.calculate_elements_current();

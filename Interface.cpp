@@ -120,7 +120,38 @@ void Interface::user_interface() {
                 break;
             }
             else if (command == "add"){
-
+                std::string type;
+                int node1, node2;
+                float value;
+                std::shared_ptr<Element> e = nullptr;
+                std::cout << "Type: " << std::endl;
+                std::cin >> type;
+                std::cout << "Nodes: " << std::endl;
+                std::cin >> node1 >> node2;
+                std::cout << "Value: " << std::endl;
+                std::cin >> value;
+                if (type == "r" || type == "R") {
+                    e = std::make_shared<Resistor>(node1, node2, value);
+                }
+                else if (type == "c" || type == "C"){
+                    e = std::make_shared<Capacitor>(node1, node2, value);
+                }
+                else if (type == "l" || type == "L"){
+                    e = std::make_shared<Inductor>(node1, node2, value);
+                }
+                else{
+                    if (type == "v" || type == "V"){
+                        e = std::make_shared<Source>(node1, node2, value, Type::voltage, _freq);
+                    }
+                    else if (type == "a" || type == "A"){
+                        e = std::make_shared<Source>(node1, node2, value, Type::current, _freq);
+                    }
+                }
+                if (e != nullptr){
+                    _elements.push_back(e);
+                    e->set_name({type[0], (char)(node1+'0'), (char)(node2+'0')});
+                    std::cout << "Element  " << e->get_name() << " added to circuit. " << std::endl;
+                }
             }
             else if (command == "remove"){
                 std::string name;
